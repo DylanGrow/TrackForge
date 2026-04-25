@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#0f0f0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>TrackForge</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app" class="state-idle">
+    <!-- Top: Timer -->
+    <header class="hud-top">
+      <time id="timer">00:00:00</time>
+      <span id="gps-status" class="status-badge">Searching GPS...</span>
+    </header>
+
+    <!-- Middle: Stats -->
+    <section class="hud-stats">
+      <div class="stat primary">
+        <span id="distance">0.00</span>
+        <small id="distance-unit">km</small>
+      </div>
+      <div class="stat secondary">
+        <span id="speed">0.0</span>
+        <small id="speed-unit">km/h</small>
+      </div>
+      <div class="stat secondary">
+        <span id="avg-speed">0.0</span>
+        <small>Avg</small>
+      </div>
+      <div class="stat tertiary">
+        <span id="elevation">0</span>
+        <small>m ↑</small>
+      </div>
+    </section>
+
+    <!-- Map Canvas (lazy loaded) -->
+    <canvas id="map-canvas"></canvas>
+
+    <!-- Controls (thumb zone) -->
+    <footer class="hud-controls">
+      <button id="ctrl-primary" aria-label="Start">START</button>
+      <button id="ctrl-secondary" aria-label="History">HISTORY</button>
+      <button id="ctrl-tertiary" aria-label="Settings">⚙️</button>
+    </footer>
+  </main>
+
+  <!-- Review Overlay -->
+  <div id="review-panel" class="panel hidden">
+    <h2>Review Activity</h2>
+    <div id="review-stats"></div>
+    <canvas id="export-canvas" width="400" height="300"></canvas>
+    <textarea id="review-notes" placeholder="How did it feel?"></textarea>
+    <div class="mood-picker">
+      <button data-mood="great">😁</button>
+      <button data-mood="ok">😐</button>
+      <button data-mood="tough">😤</button>
+    </div>
+    <div class="review-actions">
+      <button id="btn-save">Save</button>
+      <button id="btn-export">Export PNG</button>
+      <button id="btn-discard" class="danger">Discard</button>
+    </div>
+  </div>
+
+  <!-- History List -->
+  <div id="history-panel" class="panel hidden">
+    <h2>History</h2>
+    <ul id="history-list"></ul>
+    <button id="btn-back-history">← Back</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
