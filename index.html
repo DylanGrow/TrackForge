@@ -2,53 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#0f0f0f">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0f">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>TrackForge</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <main id="app" class="state-idle">
-    <!-- Top: Timer -->
+<body data-theme="dark">
+  <main id="app">
     <header class="hud-top">
-      <time id="timer">00:00:00</time>
+      <div class="timer-wrap">
+        <time id="timer" aria-live="polite">00:00:00</time>
+        <span id="bg-notice" class="bg-notice"></span>
+      </div>
       <span id="gps-status" class="status-badge">Searching GPS...</span>
+      <button id="theme-toggle" aria-label="Toggle theme">🌓</button>
     </header>
 
-    <!-- Middle: Stats -->
-    <section class="hud-stats">
-      <div class="stat primary">
-        <span id="distance">0.00</span>
-        <small id="distance-unit">km</small>
+    <canvas id="audio-visualizer" width="300" height="40" aria-hidden="true"></canvas>
+
+    <section class="hud-stats" aria-label="Activity stats">
+      <div class="stat-ring-card">
+        <svg class="ring" viewBox="0 0 100 100">
+          <circle class="ring-bg" cx="50" cy="50" r="42" />
+          <circle class="ring-progress" cx="50" cy="50" r="42" id="dist-ring" />
+        </svg>
+        <div class="ring-content">
+          <span id="distance" aria-live="polite">0.00</span>
+          <small id="distance-unit">km</small>
+        </div>
       </div>
-      <div class="stat secondary">
-        <span id="speed">0.0</span>
-        <small id="speed-unit">km/h</small>
+
+      <div class="stat-ring-card">
+        <svg class="ring" viewBox="0 0 100 100">
+          <circle class="ring-bg" cx="50" cy="50" r="42" />
+          <circle class="ring-progress" cx="50" cy="50" r="42" id="speed-ring" />
+        </svg>
+        <div class="ring-content">
+          <span id="speed" aria-live="polite">0.0</span>
+          <small id="speed-unit">km/h</small>
+        </div>
       </div>
-      <div class="stat secondary">
+
+      <div class="stat-card flat">
         <span id="avg-speed">0.0</span>
         <small>Avg</small>
       </div>
-      <div class="stat tertiary">
-        <span id="elevation">0</span>
+      <div class="stat-card flat">
+        <span id="elevation" data-unit-elev>0</span>
         <small>m ↑</small>
       </div>
     </section>
 
-    <!-- Map Canvas (lazy loaded) -->
     <canvas id="map-canvas"></canvas>
 
-    <!-- Controls (thumb zone) -->
     <footer class="hud-controls">
-      <button id="ctrl-primary" aria-label="Start">START</button>
-      <button id="ctrl-secondary" aria-label="History">HISTORY</button>
-      <button id="ctrl-tertiary" aria-label="Settings">⚙️</button>
+      <button id="ctrl-secondary" aria-label="History">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </button>
+      <button id="ctrl-primary" aria-label="Start tracking">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        START
+      </button>
+      <button id="ctrl-tertiary" aria-label="Settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </button>
     </footer>
   </main>
 
-  <!-- Review Overlay -->
   <div id="review-panel" class="panel hidden">
     <h2>Review Activity</h2>
     <div id="review-stats"></div>
@@ -60,17 +83,30 @@
       <button data-mood="tough">😤</button>
     </div>
     <div class="review-actions">
-      <button id="btn-save">Save</button>
-      <button id="btn-export">Export PNG</button>
-      <button id="btn-discard" class="danger">Discard</button>
+      <button id="btn-save">💾 Save Locally</button>
+      <button id="btn-export-png">📷 Share PNG</button>
+      <button id="btn-export-gpx">🗺️ Export GPX</button>
+      <button id="btn-discard" class="danger">🗑️ Discard</button>
     </div>
   </div>
 
-  <!-- History List -->
   <div id="history-panel" class="panel hidden">
     <h2>History</h2>
-    <ul id="history-list"></ul>
-    <button id="btn-back-history">← Back</button>
+    <ul id="history-list" aria-label="Past activities"></ul>
+    <button id="btn-back-history" class="secondary">← Back</button>
+  </div>
+
+  <div id="settings-panel" class="panel hidden">
+    <h2>⚙️ Settings</h2>
+    <div class="settings-row">
+      <button id="btn-install-pwa" style="display:none;">📲 Install App</button>
+      <button id="btn-toggle-units">📐 Toggle Miles/Feet</button>
+    </div>
+    <div class="settings-row">
+      <button id="btn-export-all">📤 Export All Data (JSON)</button>
+      <button id="btn-clear-all" class="danger-btn">🗑️ Clear All Data</button>
+    </div>
+    <button id="btn-back-settings" class="secondary">← Back</button>
   </div>
 
   <script src="app.js"></script>
