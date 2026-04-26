@@ -1,13 +1,9 @@
 {
-  "name": "TrackForge Activity Tracker",
+  "name": "TrackForge",
   "short_name": "TrackForge",
-  "start_url": "./",
+  "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0a0a0f",
-  "theme_color": "#0a0a0f",
-  "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
-  ]
+  "background_color": "#111",
+  "theme_color": "#FFD700",
+  "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
 }
