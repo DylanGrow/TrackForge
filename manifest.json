@@ -1,9 +1,16 @@
 {
-  "name": "TrackForge",
+  "name": "TrackForge Pro",
   "short_name": "TrackForge",
-  "start_url": "/",
+  "description": "A fast, reliable, privacy-focused GPS activity tracker.",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#111",
-  "theme_color": "#FFD700",
-  "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+  "orientation": "portrait",
+  "background_color": "#090a0f",
+  "theme_color": "#090a0f",
+  "categories": ["fitness", "health", "sports"],
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
 }
